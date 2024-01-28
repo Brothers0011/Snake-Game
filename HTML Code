@@ -1,0 +1,602 @@
+Brothers0011
+######################################################################################################
+html code for Snake-GAME
+######################################################################################################
+paste this code on your website to get the game
+######################################################################################################
+code taken from https://codepen.io
+######################################################################################################
+Snake-Game for websites used in -> ( sites.google.com/view/brothers0011/games/Snake-game )
+######################################################################################################
+
+
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  
+
+    <link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
+
+    <meta name="apple-mobile-web-app-title" content="CodePen">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+
+    <link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-b4b4269c16397ad2f0f7a01bcdf513a1994f4c94b8af2f191c09eb0d601762b1.svg" color="#111" />
+
+
+
+  
+    <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-2c7831bb44f98c1391d6a4ffda0e1fd302503391ca806e7fcc7b9b87197aec26.js"></script>
+
+
+  <title>CodePen - Vanilla JS Snake</title>
+
+    <link rel="canonical" href="https://codepen.io/fariati/pen/mdRpEYP">
+  <script defer src="https://pro.fontawesome.com/releases/v5.10.0/js/all.js"
+        integrity="sha384-G/ZR3ntz68JZrH4pfPJyRbjW+c0+ojii5f+GYiYwldYU69A+Ejat6yIfLSxljXxD"
+        crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;800&display=swap" rel="stylesheet">
+  
+  
+  
+<style>
+@font-face {
+  font-family: "game";
+  src: url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;800&display=swap");
+}
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+button:focus {
+  outline: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Poppins", sans-serif;
+  color: #6e7888;
+}
+body {
+  background-color: #222738;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #6e7888;
+}
+canvas {
+  background-color: #181825;
+}
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+}
+#ui {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  flex-flow: column;
+  margin-left: 10px;
+}
+h2 {
+  font-weight: 900;
+  font-size: 10px;
+  letter-spacing: 8px;
+  margin-bottom: 30px;
+  transform: rotate(270deg);
+}
+#score {
+  margin-top: 20px;
+  font-size: 30px;
+  font-weight: 800;
+  transform: rotate(-90deg);
+}
+.noselect {
+  user-select: none;
+}
+#replay {
+  font-size: 10px;
+  padding: 10px 20px;
+  background: #6e7888;
+  border: none;
+  color: #222738;
+  border-radius: 40px;
+  font-weight: 800;
+  transform: rotate(270deg);
+  cursor: pointer;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+#replay:hover {
+  background: #a6aab5;
+  background: #4cffd7;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+#replay svg {
+  margin-right: 8px;
+}
+@media (max-width: 600px) {
+  #replay {
+    margin-bottom: 20px;
+  }
+  #replay,
+  h2 {
+    transform: rotate(0deg);
+  }
+  #ui {
+    flex-flow: row wrap;
+    margin-bottom: 20px;
+  }
+  #score {
+    margin-top: 0;
+    margin-left: 20px;
+  }
+  .container {
+    flex-flow: column wrap;
+  }
+}
+#author {
+  width: 100%;
+  bottom: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: inherit;
+  text-transform: uppercase;
+  padding-left: 35px;
+}
+#author span {
+  font-size: 10px;
+  margin-left: 20px;
+  color: inherit;
+  letter-spacing: 4px;
+}
+#author h1 {
+  font-size: 25px;
+}
+.wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+</style>
+
+  <script>
+  window.console = window.console || function(t) {};
+</script>
+
+  
+  
+</head>
+
+<body translate="no">
+  <div class="container noselect">
+  <div class="wrapper">
+    <button id="replay">
+      <i class="fas fa-play"></i>
+      RESTART
+    </button>
+    <div id="canvas">
+
+    </div>
+    <div id="ui">
+      <h2>SCORE
+      </h2>
+      <span id="score">00</span>
+    </div>
+  </div>
+  <div id="author">
+    <h1>SNAKE</h1> <span>by Fariat</span>
+  </div>
+</div>
+  
+      <script id="rendered-js" >
+/**
+ * Snake game created with plain JavaScript by Ibrahim fariat.
+ * Follow me if you like it!
+ **/
+
+let dom_replay = document.querySelector("#replay");
+let dom_score = document.querySelector("#score");
+let dom_canvas = document.createElement("canvas");
+document.querySelector("#canvas").appendChild(dom_canvas);
+let CTX = dom_canvas.getContext("2d");
+
+const W = dom_canvas.width = 400;
+const H = dom_canvas.height = 400;
+
+let snake,
+food,
+currentHue,
+cells = 20,
+cellSize,
+isGameOver = false,
+tails = [],
+score = 00,
+maxScore = window.localStorage.getItem("maxScore") || undefined,
+particles = [],
+splashingParticleCount = 20,
+cellsCount,
+requestID;
+
+let helpers = {
+  Vec: class {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+    add(v) {
+      this.x += v.x;
+      this.y += v.y;
+      return this;
+    }
+    mult(v) {
+      if (v instanceof helpers.Vec) {
+        this.x *= v.x;
+        this.y *= v.y;
+        return this;
+      } else {
+        this.x *= v;
+        this.y *= v;
+        return this;
+      }
+    }},
+
+  isCollision(v1, v2) {
+    return v1.x == v2.x && v1.y == v2.y;
+  },
+  garbageCollector() {
+    for (let i = 0; i < particles.length; i++) {if (window.CP.shouldStopExecution(0)) break;
+      if (particles[i].size <= 0) {
+        particles.splice(i, 1);
+      }
+    }window.CP.exitedLoop(0);
+  },
+  drawGrid() {
+    CTX.lineWidth = 1.1;
+    CTX.strokeStyle = "#232332";
+    CTX.shadowBlur = 0;
+    for (let i = 1; i < cells; i++) {if (window.CP.shouldStopExecution(1)) break;
+      let f = W / cells * i;
+      CTX.beginPath();
+      CTX.moveTo(f, 0);
+      CTX.lineTo(f, H);
+      CTX.stroke();
+      CTX.beginPath();
+      CTX.moveTo(0, f);
+      CTX.lineTo(W, f);
+      CTX.stroke();
+      CTX.closePath();
+    }window.CP.exitedLoop(1);
+  },
+  randHue() {
+    return ~~(Math.random() * 360);
+  },
+  hsl2rgb(hue, saturation, lightness) {
+    if (hue == undefined) {
+      return [0, 0, 0];
+    }
+    var chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
+    var huePrime = hue / 60;
+    var secondComponent = chroma * (1 - Math.abs(huePrime % 2 - 1));
+
+    huePrime = ~~huePrime;
+    var red;
+    var green;
+    var blue;
+
+    if (huePrime === 0) {
+      red = chroma;
+      green = secondComponent;
+      blue = 0;
+    } else if (huePrime === 1) {
+      red = secondComponent;
+      green = chroma;
+      blue = 0;
+    } else if (huePrime === 2) {
+      red = 0;
+      green = chroma;
+      blue = secondComponent;
+    } else if (huePrime === 3) {
+      red = 0;
+      green = secondComponent;
+      blue = chroma;
+    } else if (huePrime === 4) {
+      red = secondComponent;
+      green = 0;
+      blue = chroma;
+    } else if (huePrime === 5) {
+      red = chroma;
+      green = 0;
+      blue = secondComponent;
+    }
+
+    var lightnessAdjustment = lightness - chroma / 2;
+    red += lightnessAdjustment;
+    green += lightnessAdjustment;
+    blue += lightnessAdjustment;
+
+    return [
+    Math.round(red * 255),
+    Math.round(green * 255),
+    Math.round(blue * 255)];
+
+  },
+  lerp(start, end, t) {
+    return start * (1 - t) + end * t;
+  } };
+
+
+let KEY = {
+  ArrowUp: false,
+  ArrowRight: false,
+  ArrowDown: false,
+  ArrowLeft: false,
+  resetState() {
+    this.ArrowUp = false;
+    this.ArrowRight = false;
+    this.ArrowDown = false;
+    this.ArrowLeft = false;
+  },
+  listen() {
+    addEventListener(
+    "keydown",
+    e => {
+      if (e.key === "ArrowUp" && this.ArrowDown) return;
+      if (e.key === "ArrowDown" && this.ArrowUp) return;
+      if (e.key === "ArrowLeft" && this.ArrowRight) return;
+      if (e.key === "ArrowRight" && this.ArrowLeft) return;
+      this[e.key] = true;
+      Object.keys(this).
+      filter(f => f !== e.key && f !== "listen" && f !== "resetState").
+      forEach(k => {
+        this[k] = false;
+      });
+    },
+    false);
+
+  } };
+
+
+class Snake {
+  constructor(i, type) {
+    this.pos = new helpers.Vec(W / 2, H / 2);
+    this.dir = new helpers.Vec(0, 0);
+    this.type = type;
+    this.index = i;
+    this.delay = 5;
+    this.size = W / cells;
+    this.color = "white";
+    this.history = [];
+    this.total = 1;
+  }
+  draw() {
+    let { x, y } = this.pos;
+    CTX.fillStyle = this.color;
+    CTX.shadowBlur = 20;
+    CTX.shadowColor = "rgba(255,255,255,.3 )";
+    CTX.fillRect(x, y, this.size, this.size);
+    CTX.shadowBlur = 0;
+    if (this.total >= 2) {
+      for (let i = 0; i < this.history.length - 1; i++) {if (window.CP.shouldStopExecution(2)) break;
+        let { x, y } = this.history[i];
+        CTX.lineWidth = 1;
+        CTX.fillStyle = "rgba(225,225,225,1)";
+        CTX.fillRect(x, y, this.size, this.size);
+      }window.CP.exitedLoop(2);
+    }
+  }
+  walls() {
+    let { x, y } = this.pos;
+    if (x + cellSize > W) {
+      this.pos.x = 0;
+    }
+    if (y + cellSize > W) {
+      this.pos.y = 0;
+    }
+    if (y < 0) {
+      this.pos.y = H - cellSize;
+    }
+    if (x < 0) {
+      this.pos.x = W - cellSize;
+    }
+  }
+  controlls() {
+    let dir = this.size;
+    if (KEY.ArrowUp) {
+      this.dir = new helpers.Vec(0, -dir);
+    }
+    if (KEY.ArrowDown) {
+      this.dir = new helpers.Vec(0, dir);
+    }
+    if (KEY.ArrowLeft) {
+      this.dir = new helpers.Vec(-dir, 0);
+    }
+    if (KEY.ArrowRight) {
+      this.dir = new helpers.Vec(dir, 0);
+    }
+  }
+  selfCollision() {
+    for (let i = 0; i < this.history.length; i++) {if (window.CP.shouldStopExecution(3)) break;
+      let p = this.history[i];
+      if (helpers.isCollision(this.pos, p)) {
+        isGameOver = true;
+      }
+    }window.CP.exitedLoop(3);
+  }
+  update() {
+    this.walls();
+    this.draw();
+    this.controlls();
+    if (!this.delay--) {
+      if (helpers.isCollision(this.pos, food.pos)) {
+        incrementScore();
+        particleSplash();
+        food.spawn();
+        this.total++;
+      }
+      this.history[this.total - 1] = new helpers.Vec(this.pos.x, this.pos.y);
+      for (let i = 0; i < this.total - 1; i++) {if (window.CP.shouldStopExecution(4)) break;
+        this.history[i] = this.history[i + 1];
+      }window.CP.exitedLoop(4);
+      this.pos.add(this.dir);
+      this.delay = 5;
+      this.total > 3 ? this.selfCollision() : null;
+    }
+  }}
+
+
+class Food {
+  constructor() {
+    this.pos = new helpers.Vec(
+    ~~(Math.random() * cells) * cellSize,
+    ~~(Math.random() * cells) * cellSize);
+
+    this.color = currentHue = `hsl(${~~(Math.random() * 360)},100%,50%)`;
+    this.size = cellSize;
+  }
+  draw() {
+    let { x, y } = this.pos;
+    CTX.globalCompositeOperation = "lighter";
+    CTX.shadowBlur = 20;
+    CTX.shadowColor = this.color;
+    CTX.fillStyle = this.color;
+    CTX.fillRect(x, y, this.size, this.size);
+    CTX.globalCompositeOperation = "source-over";
+    CTX.shadowBlur = 0;
+  }
+  spawn() {
+    let randX = ~~(Math.random() * cells) * this.size;
+    let randY = ~~(Math.random() * cells) * this.size;
+    for (let path of snake.history) {
+      if (helpers.isCollision(new helpers.Vec(randX, randY), path)) {
+        return this.spawn();
+      }
+    }
+    this.color = currentHue = `hsl(${helpers.randHue()}, 100%, 50%)`;
+    this.pos = new helpers.Vec(randX, randY);
+  }}
+
+
+class Particle {
+  constructor(pos, color, size, vel) {
+    this.pos = pos;
+    this.color = color;
+    this.size = Math.abs(size / 2);
+    this.ttl = 0;
+    this.gravity = -0.2;
+    this.vel = vel;
+  }
+  draw() {
+    let { x, y } = this.pos;
+    let hsl = this.color.
+    split("").
+    filter(l => l.match(/[^hsl()$% ]/g)).
+    join("").
+    split(",").
+    map(n => +n);
+    let [r, g, b] = helpers.hsl2rgb(hsl[0], hsl[1] / 100, hsl[2] / 100);
+    CTX.shadowColor = `rgb(${r},${g},${b},${1})`;
+    CTX.shadowBlur = 0;
+    CTX.globalCompositeOperation = "lighter";
+    CTX.fillStyle = `rgb(${r},${g},${b},${1})`;
+    CTX.fillRect(x, y, this.size, this.size);
+    CTX.globalCompositeOperation = "source-over";
+  }
+  update() {
+    this.draw();
+    this.size -= 0.3;
+    this.ttl += 1;
+    this.pos.add(this.vel);
+    this.vel.y -= this.gravity;
+  }}
+
+
+function incrementScore() {
+  score++;
+  dom_score.innerText = score.toString().padStart(2, "0");
+}
+
+function particleSplash() {
+  for (let i = 0; i < splashingParticleCount; i++) {if (window.CP.shouldStopExecution(5)) break;
+    let vel = new helpers.Vec(Math.random() * 6 - 3, Math.random() * 6 - 3);
+    let position = new helpers.Vec(food.pos.x, food.pos.y);
+    particles.push(new Particle(position, currentHue, food.size, vel));
+  }window.CP.exitedLoop(5);
+}
+
+function clear() {
+  CTX.clearRect(0, 0, W, H);
+}
+
+function initialize() {
+  CTX.imageSmoothingEnabled = false;
+  KEY.listen();
+  cellsCount = cells * cells;
+  cellSize = W / cells;
+  snake = new Snake();
+  food = new Food();
+  dom_replay.addEventListener("click", reset, false);
+  loop();
+}
+
+function loop() {
+  clear();
+  if (!isGameOver) {
+    requestID = setTimeout(loop, 1000 / 60);
+    helpers.drawGrid();
+    snake.update();
+    food.draw();
+    for (let p of particles) {
+      p.update();
+    }
+    helpers.garbageCollector();
+  } else {
+    clear();
+    gameOver();
+  }
+}
+
+function gameOver() {
+  maxScore ? null : maxScore = score;
+  score > maxScore ? maxScore = score : null;
+  window.localStorage.setItem("maxScore", maxScore);
+  CTX.fillStyle = "#4cffd7";
+  CTX.textAlign = "center";
+  CTX.font = "bold 30px Poppins, sans-serif";
+  CTX.fillText("GAME OVER", W / 2, H / 2);
+  CTX.font = "15px Poppins, sans-serif";
+  CTX.fillText(`SCORE   ${score}`, W / 2, H / 2 + 60);
+  CTX.fillText(`MAXSCORE   ${maxScore}`, W / 2, H / 2 + 80);
+}
+
+function reset() {
+  dom_score.innerText = "00";
+  score = "00";
+  snake = new Snake();
+  food.spawn();
+  KEY.resetState();
+  isGameOver = false;
+  clearTimeout(requestID);
+  loop();
+}
+
+initialize();
+//# sourceURL=pen.js
+    </script>
+
+  
+</body>
+
+</html>
